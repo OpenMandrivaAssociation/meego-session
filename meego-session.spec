@@ -24,6 +24,10 @@ EXEC=%{_sysconfdir}/xdg/meego/xinitrc
 SCRIPT:
 exec %{_sysconfdir}/xdg/meego/xinitrc
 EOF
+cat > startmeego <<EOF
+#!/bin/sh
+exec startx %{_sysconfdir}/X11/Xsession %{_sysconfdir}/xdg/meego/xinitrc
+EOF
 
 %build
 %make
@@ -35,6 +39,7 @@ rm -rf %{buildroot}
 rm -f %{buildroot}%{_datadir}/xsessions/moblin.desktop
 install -d %{buildroot}%{_sysconfdir}/X11/wmsession.d
 install -m755 10meego %{buildroot}%{_sysconfdir}/X11/wmsession.d/
+install -m755 startmeego %{buildroot}%{_bindir}/
 chmod 755 %{buildroot}%{_sysconfdir}/xdg/meego/xinitrc
 
 %find_lang %{name}
