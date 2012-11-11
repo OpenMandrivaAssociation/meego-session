@@ -1,0 +1,116 @@
+diff -rud moblin-session-0.13-orig//Makefile moblin-session-0.13/Makefile
+--- moblin-session-0.13-orig//Makefile	2010-11-26 16:32:29.000000000 -0200
++++ moblin-session-0.13/Makefile	2010-11-26 16:27:29.000000000 -0200
+@@ -6,9 +6,9 @@
+ install:
+ 	mkdir -p $(DESTDIR)/usr/share/xsessions
+ 	install -m644 moblin.desktop $(DESTDIR)/usr/share/xsessions
+-	mkdir -p $(DESTDIR)/usr/bin $(DESTDIR)/etc/xdg/moblin
+-	install -m644 moblin-xinitrc $(DESTDIR)/etc/xdg/moblin/xinitrc
+-	install -m755 startmoblin $(DESTDIR)/usr/bin/startmoblin
++	mkdir -p $(DESTDIR)/usr/bin $(DESTDIR)/etc/xdg/meego
++	install -m644 moblin-xinitrc $(DESTDIR)/etc/xdg/meego/xinitrc
++	install -m755 startmoblin $(DESTDIR)/usr/bin/startmeego
+ 
+ dist:
+ 	git archive --format=tar --prefix=$(PACKAGE)-$(VERSION)/ HEAD \
+diff -rud moblin-session-0.13-orig//moblin-xinitrc moblin-session-0.13/moblin-xinitrc
+--- moblin-session-0.13-orig//moblin-xinitrc	2010-11-26 16:32:29.000000000 -0200
++++ moblin-session-0.13/moblin-xinitrc	2010-11-26 16:35:28.000000000 -0200
+@@ -34,6 +34,9 @@
+ # load local modmap
+ test -r $HOME/.Xmodmap && xmodmap $HOME/.Xmodmap
+ 
++# Use custom gconf2 path in MeeGo session:
++export GCONF_DEFAULT_SOURCE_PATH=/etc/gconf/2/meego.path
++
+ # Set the env variables of Input Method
+ export GTK_IM_MODULE=scim-bridge
+ export CLUTTER_IM_MODULE=scim-bridge
+@@ -56,12 +59,12 @@
+             hide=1
+           };
+           if ($1 == "OnlyShowIn") {
+-            if ($2 !~ /MOBLIN;/) {
++            if ($2 !~ /MEEGO;/) {
+               hide=1
+             }
+           };
+           if ($1 == "NotShowIn") {
+-            if ($2 ~ /GNOME;|MOBLIN;/) {
++            if ($2 ~ /GNOME;|MEEGO;/) {
+               hide=1
+             }
+           }
+@@ -81,19 +84,17 @@
+ fi
+ } &
+ 
+-ionice -n7 /usr/libexec/mission-control &
++ionice -n7 /usr/lib/mission-control &
+ #ionice -n7 nautilus --no-desktop --no-default-window &
+ 
+ # Make OO.o use gtk+ theming
+ export OOO_FORCE_DESKTOP=gnome
+ 
+ # Start panels in advance
+-/usr/libexec/moblin-panel-myzone &
+-/usr/libexec/moblin-panel-status &
+-/usr/libexec/moblin-panel-people &
+-/usr/libexec/moblin-panel-internet &
+-/usr/libexec/moblin-panel-media &
+-/usr/libexec/moblin-panel-pasteboard &
+-/usr/libexec/moblin-panel-applications &
++/usr/lib/meego-panel-myzone &
++/usr/lib/meego-panel-applications &
++/usr/lib/meego-panel-web &
++/usr/lib/meego-panel-status &
++/usr/lib/meego-panel-zones &
+ 
+ mutter --sm-disable
+Only in moblin-session-0.13: moblin-xinitrc~
+diff -rud moblin-session-0.13-orig//moblin.desktop moblin-session-0.13/moblin.desktop
+--- moblin-session-0.13-orig//moblin.desktop	2010-11-26 16:32:29.000000000 -0200
++++ moblin-session-0.13/moblin.desktop	2010-11-26 16:27:29.000000000 -0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Encoding=UTF-8
+ Type=XSession
+-Exec=startmoblin
+-TryExec=startmoblin
+-Name=Moblin User Experience
+-Comment=Moblin User Experience
++Exec=startmeego
++TryExec=startmeego
++Name=MeeGo User Experience
++Comment=MeeGo User Experience
+diff -rud moblin-session-0.13-orig//startmoblin moblin-session-0.13/startmoblin
+--- moblin-session-0.13-orig//startmoblin	2010-11-26 16:32:29.000000000 -0200
++++ moblin-session-0.13/startmoblin	2010-11-26 16:27:29.000000000 -0200
+@@ -21,9 +21,9 @@
+ 
+ if test "x$XDG_CONFIG_HOME" = "x"
+ then
+-  BASEDIR="$HOME/.config/moblin/"
++  BASEDIR="$HOME/.config/meego/"
+ else
+-  BASEDIR="$XDG_CONFIG_HOME/moblin"
++  BASEDIR="$XDG_CONFIG_HOME/meego"
+ fi
+ 
+ if test "x$XDG_DATA_DIRS" = "x"
+@@ -68,11 +68,11 @@
+ 
+ if [ -f $BASEDIR/xinitrc ]; then
+   exec $prog $BASEDIR/xinitrc $CLIENTRC $SERVERRC
+-elif [ -f $HOME/.moblin/xinitrc ]; then
++elif [ -f $HOME/.meego/xinitrc ]; then
+   mkdir -p $BASEDIR
+-  cp $HOME/.moblin/xinitrc $BASEDIR/
++  cp $HOME/.meego/xinitrc $BASEDIR/
+   exec $prog $BASEDIR/xinitrc $CLIENTRC $SERVERRC
+ else
+-  exec $prog /etc/xdg/moblin/xinitrc $CLIENTRC $SERVERRC
++  exec $prog /etc/xdg/meego/xinitrc $CLIENTRC $SERVERRC
+ fi  
+ 
