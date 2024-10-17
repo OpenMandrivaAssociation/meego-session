@@ -4,7 +4,7 @@ Group: Graphical desktop/Other
 Version: 0.13
 Release: %mkrel 1
 License: GPLv2
-URL: http://www.moblin.org
+URL: https://www.moblin.org
 Source0: http://git.moblin.org/cgit.cgi/%{name}/snapshot/moblin-session-%{version}.tar.bz2
 Patch0: moblin-session-0.13-meego.patch
 Requires: telepathy-mission-control
