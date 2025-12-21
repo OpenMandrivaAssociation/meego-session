@@ -11,6 +11,7 @@ Requires: telepathy-mission-control
 Requires: meego-ux-settings
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
+BuildRequires:	make
 %description
 Description: %{summary}
 
